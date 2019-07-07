@@ -72,7 +72,8 @@ OPTIONAL("libmchp_peripheral_32MX250F128B.a")
  * For interrupt vector handling
  *************************************************************************/
 PROVIDE(_vector_spacing = 0x00000001);
-_ebase_address = 0x9D01F000;
+/* _ebase_address = 0x9D01F000; */
+_ebase_address = 0x9D000000;
 
 /*************************************************************************
  * Memory Address Equates
@@ -103,8 +104,8 @@ _GEN_EXCPT_ADDR                = _ebase_address + 0x180;
  *************************************************************************/
 MEMORY
 {
-  kseg0_program_mem     (rx)  : ORIGIN = 0x9D000000, LENGTH = 0xD000 /* modified (LENGTH = 0x1F000) */
-  exception_mem               : ORIGIN = 0x9D01F000, LENGTH = 0x0 /* dummy (LENGTH = 0x1000) */
+  kseg0_program_mem     (rx)  : ORIGIN = 0x9D001000, LENGTH = 0xD000 /* modified (LENGTH = 0x1F000) */
+  exception_mem               : ORIGIN = 0x9D000000, LENGTH = 0x0 /* modified  (ORIGIN = 0x9D01F000, LENGTH = 0x1000) */
   debug_exec_mem              : ORIGIN = 0x9FC00490, LENGTH = 0x0 /* dummy (LENGTH = 0x760) */
   kseg0_boot_mem              : ORIGIN = 0x9FC00490, LENGTH = 0x0
   kseg1_boot_mem              : ORIGIN = 0xBFC00000, LENGTH = 0x490
@@ -658,7 +659,8 @@ SECTIONS
     . = ALIGN(4) ;
   } >kseg1_data_mem
   . = .;
-  _gp = ALIGN(16) + 0x7ff0;
+/*  _gp = ALIGN(16) + 0x7ff0; */
+  _gp = 0xA0008000; /* $gp is at the center of RAM area */
   .got ALIGN(4) :
   {
     *(.got.plt) *(.got)

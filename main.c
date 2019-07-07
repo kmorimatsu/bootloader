@@ -53,29 +53,29 @@ int main(void)
 	// Main loop
 	while(1){
 		// Clear screen
-		for(i=40;i<1000;i++) VRAM[i]=0;
+		for(i=80;i<1000;i++) VRAM[i]=0;
 		// Wait until the USB device is attached
-		printstr(40,"USB memory:");
+		printstr(80,"USB memory:");
 		drawcount=0;
 		while(1){
 			USBTasks();
 			if (USBHostMSDSCSIMediaDetect()) {
 				if (FSInit()) break;
-				printstr(52,"format error");
+				printstr(92,"format error");
 			} else if (120<drawcount) {
 				drawcount=0;
-				printstr(52,"not ready   ");
+				printstr(92,"not ready   ");
 			}
 	
 		}
-		printstr(52,"connected   ");
+		printstr(92,"connected   ");
 		deviceAttached = TRUE;
 
 		// Directory listing
 	   	filenum=0;
-		cursor=81;
+		cursor=121;
 		if(FindFirst("*.hex",ATTR_MASK,&sr)){
-			printstr(0,"No HEX File Found");
+			printstr(120,"No HEX File Found");
 			while(deviceAttached) {
 				USBTasks();
 			}
@@ -86,11 +86,11 @@ int main(void)
 				filenum++;
 				cursor+=13;
 				if (0==(filenum % 3)) cursor++;
-			} while(!FindNext(&sr) && filenum<69);
+			} while(!FindNext(&sr) && filenum<66);
 		}
 
 		// Select a file
-		cursor=80;
+		cursor=120;
 		drawcount=0;
 		while(deviceAttached){
 			// Blink the cursor
@@ -98,10 +98,11 @@ int main(void)
 			else VRAM[cursor]=0x1c;
 			// Detect CR key
 			if (g_keymatrix2[8]&(1<<4)) {
-				VRAM[cursor]=0x1c;
-				printstr(0,"HEX file:                              ");
-				printstr(10,&VRAM[cursor+1]);
-				while(1);
+				load_hexfile_and_run(&VRAM[cursor+1]);
+				//VRAM[cursor]=0x1c;
+				//printstr(0,"HEX file:                              ");
+				//printstr(10,&VRAM[cursor+1]);
+				//while(1);
 			}
 			// Detect right/left key
 			if (g_keymatrix2[8]&(1<<3)) {
@@ -114,7 +115,7 @@ int main(void)
 					if ((i%40)==39) i++;
 				}
 				// Check if valid movement
-				if (i<80) i=cursor;
+				if (i<120) i=cursor;
 				else if (1000<i) i=cursor;
 				else if (0x00==VRAM[i+1]) i=cursor;
 				// Refresh view
@@ -136,7 +137,7 @@ int main(void)
 					i=cursor+40;
 				}
 				// Check if valid movement
-				if (i<80) i=cursor;
+				if (i<120) i=cursor;
 				else if (1000<i) i=cursor;
 				else if (0x00==VRAM[i+1]) i=cursor;
 				// Refresh view
